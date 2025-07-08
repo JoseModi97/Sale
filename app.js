@@ -149,7 +149,7 @@ $(document).ready(function () {
                 actionButtonsHtml = `
                     <input type="number" class="form-control form-control-sm product-quantity-input mr-2" value="1" min="1" disabled style="width: 60px;" data-product-id="${product.id}">
                     <button class="btn btn-secondary btn-sm add-to-cart flex-grow-1 mr-1" data-id="${product.id}" data-name="${product.title}" data-price="${product.price.toFixed(2)}" disabled>
-                        Out of Stock
+                        Add
                     </button>
                     <button class="btn btn-outline-secondary btn-sm view-details flex-grow-1" data-id="${product.id}">Details</button>`;
             }
