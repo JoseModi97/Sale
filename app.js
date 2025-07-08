@@ -136,6 +136,24 @@ $(document).ready(function () {
         productsToRender.forEach(product => {
             const stock = product.inventory !== undefined ? product.inventory : 0;
             const outOfStockClass = stock <= 0 ? 'out-of-stock' : '';
+            let actionButtonsHtml = '';
+
+            if (stock > 0) {
+                actionButtonsHtml = `
+                    <input type="number" class="form-control form-control-sm product-quantity-input mr-2" value="1" min="1" max="${stock}" style="width: 60px;" data-product-id="${product.id}">
+                    <button class="btn btn-primary btn-sm add-to-cart flex-grow-1 mr-1" data-id="${product.id}" data-name="${product.title}" data-price="${product.price.toFixed(2)}">
+                        Add
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm view-details flex-grow-1" data-id="${product.id}">Details</button>`;
+            } else {
+                actionButtonsHtml = `
+                    <input type="number" class="form-control form-control-sm product-quantity-input mr-2" value="1" min="1" disabled style="width: 60px;" data-product-id="${product.id}">
+                    <button class="btn btn-secondary btn-sm add-to-cart flex-grow-1 mr-1" data-id="${product.id}" data-name="${product.title}" data-price="${product.price.toFixed(2)}" disabled>
+                        Out of Stock
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm view-details flex-grow-1" data-id="${product.id}">Details</button>`;
+            }
+
             const productCard = `
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card h-100 ${outOfStockClass}">
@@ -147,13 +165,21 @@ $(document).ready(function () {
                                 <p class="mb-1 stock-display ${stock > 0 ? 'text-success' : 'text-danger'}">
                                     ${stock > 0 ? `In Stock: ${stock}` : 'Out of Stock'}
                                 </p>
-                                <button class="btn btn-primary add-to-cart mt-1"
-                                        data-id="${product.id}"
-                                        data-name="${product.title}"
-                                        data-price="${product.price.toFixed(2)}"
-                                        ${stock <= 0 ? 'disabled' : ''}>
-                                    ${stock <= 0 ? 'Unavailable' : 'Add to Cart'}
-                                </button>
+                                <div class="d-flex mt-1 align-items-center"> <!-- Flex container for qty and button -->
+                                <p class="mb-1 stock-display ${stock > 0 ? 'text-success' : 'text-danger'}">
+                                    ${stock > 0 ? `In Stock: ${stock}` : 'Out of Stock'}
+                                </p>
+                                <div class="d-flex mt-1 align-items-center"> <!-- Flex container for qty and button -->
+                                    <input type="number" class="form-control form-control-sm product-quantity-input mr-2" value="1" min="1" max="${stock > 0 ? stock : 1}" ${stock <= 0 ? 'disabled' : ''} style="width: 60px;">
+                                    <button class="btn btn-primary btn-sm add-to-cart flex-grow-1 mr-1"
+                                            data-id="${product.id}"
+                                            data-name="${product.title}"
+                                            data-price="${product.price.toFixed(2)}"
+                                            ${stock <= 0 ? 'disabled' : ''}>
+                                        Add
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm view-details flex-grow-1" data-id="${product.id}">Details</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -255,9 +281,21 @@ $(document).ready(function () {
 
     // Add to cart
     $(document).on('click', '.add-to-cart', function () {
-        const productId = parseInt($(this).data('id'));
-        const productName = $(this).data('name');
-        const productPrice = parseFloat($(this).data('price'));
+        const $button = $(this);
+        const productId = parseInt($button.data('id'));
+        const productName = $button.data('name');
+        const productPrice = parseFloat($button.data('price'));
+
+        // Find the quantity input associated with this button
+        // It's the preceding sibling input with class .product-quantity-input
+        const $quantityInput = $button.closest('.d-flex').find('.product-quantity-input');
+        let quantityToAdd = parseInt($quantityInput.val());
+
+        if (isNaN(quantityToAdd) || quantityToAdd <= 0) {
+            showToast("Please enter a valid quantity.", 'warning');
+            $quantityInput.val(1); // Reset to 1
+            return;
+        }
 
         const productInCatalog = allProducts.find(p => p.id === productId);
 
@@ -266,36 +304,32 @@ $(document).ready(function () {
             return;
         }
 
-        if (productInCatalog.inventory <= 0) {
-            showToast(`Sorry, "${productName}" is out of stock.`, 'warning');
-            // Ensure button is disabled if somehow clicked (though it should be)
-            $(this).prop('disabled', true).text('Unavailable');
+        if (productInCatalog.inventory < quantityToAdd) {
+            showToast(`Only ${productInCatalog.inventory} of "${productName}" in stock. Cannot add ${quantityToAdd}.`, 'warning');
+            $quantityInput.val(productInCatalog.inventory > 0 ? productInCatalog.inventory : 1); // Adjust to max available or 1
+             if(productInCatalog.inventory === 0) $quantityInput.prop('disabled', true);
             return;
         }
 
-        // Check if item is already in cart to potentially just increment quantity
-        const existingCartItem = cart.find(item => item.id === productId);
-
-        if (existingCartItem) {
-            // If we allow adding more of an existing cart item, ensure stock is available
-            // The current logic assumes if button is clickable, 1 unit is available.
-            // If quantity selector on card existed, this check would be more complex.
-            existingCartItem.quantity++;
-        } else {
-            cart.push({ id: productId, name: productName, price: productPrice, quantity: 1 });
-        }
-
-        // Decrement inventory
-        productInCatalog.inventory--;
+        // Decrement inventory by quantityToAdd
+        productInCatalog.inventory -= quantityToAdd;
         saveProductsToLocalStorage(); // Save updated inventory
 
-        // Re-render products to update stock display and button state
-        // This might be broad if many products; could optimize to update only the specific card
-        renderProducts(currentProducts);
+        // Add to cart or update quantity
+        const existingCartItem = cart.find(item => item.id === productId);
+        if (existingCartItem) {
+            existingCartItem.quantity += quantityToAdd;
+        } else {
+            cart.push({ id: productId, name: productName, price: productPrice, quantity: quantityToAdd });
+        }
 
         saveCartToLocalStorage();
-        showToast(`"${productName}" added to cart.`, 'success');
+        showToast(`${quantityToAdd} unit(s) of "${productName}" added to cart.`, 'success');
         renderCart();
+
+        // Re-render products to update stock display, button state, and max value of quantity input
+        renderProducts(currentProducts);
+        // $quantityInput.val(1); // Reset quantity input on card to 1 after adding - optional UX choice
     });
 
     $(document).on('change', '.cart-item-quantity', function () {
@@ -389,8 +423,111 @@ $(document).ready(function () {
         // Note: Inventory is not "permanently" reduced beyond cart additions in this client-side sim.
     });
 
+    $('#clear-cart-button').on('click', function () {
+        if (cart.length === 0) {
+            showToast("Cart is already empty.", 'info');
+            return;
+        }
+
+        if (confirm("Are you sure you want to clear all items from your cart?")) {
+            // Return stock for all items in cart
+            cart.forEach(cartItem => {
+                const productInCatalog = allProducts.find(p => p.id === cartItem.id);
+                if (productInCatalog) {
+                    productInCatalog.inventory += cartItem.quantity;
+                }
+            });
+            saveProductsToLocalStorage(); // Save updated inventory
+
+            cart = []; // Clear the in-memory cart
+            saveCartToLocalStorage(); // Update localStorage for cart
+
+            showToast("Cart cleared.", 'info');
+            renderCart(); // Update cart UI
+            renderProducts(currentProducts); // Update product grid (stock display, button states)
+        }
+    });
+
     // --- Initial Setup ---
     loadCartFromLocalStorage();
     renderCart();
     fetchProducts(); // This will load from localStorage if available, or fetch from API and init inventory
+
+    // --- Item Detail Modal Logic ---
+    $(document).on('click', '.view-details', function () {
+        const productId = parseInt($(this).data('id'));
+        const product = allProducts.find(p => p.id === productId);
+
+        if (product) {
+            $('#modalProductName').text(product.title);
+            $('#modalProductImage').attr('src', product.image).attr('alt', product.title);
+            $('#modalProductCategory').text(product.category);
+            $('#modalProductPrice').text(`$${product.price.toFixed(2)}`);
+            $('#modalProductDescription').text(product.description);
+
+            const stock = product.inventory !== undefined ? product.inventory : 0;
+            if (stock > 0) {
+                $('#modalProductStock').text(`In Stock: ${stock}`).removeClass('text-danger').addClass('text-success');
+                $('#modal-add-to-cart-controls').show();
+                $('#modalProductQuantity').attr('max', stock).val(1).prop('disabled', false);
+                $('#modalAddToCartButton').data('id', product.id)
+                                          .data('name', product.title)
+                                          .data('price', product.price.toFixed(2))
+                                          .prop('disabled', false)
+                                          .text('Add to Cart');
+            } else {
+                $('#modalProductStock').text('Out of Stock').removeClass('text-success').addClass('text-danger');
+                $('#modal-add-to-cart-controls').show(); // Show controls but disable them
+                $('#modalProductQuantity').val(1).prop('disabled', true);
+                $('#modalAddToCartButton').prop('disabled', true).text('Out of Stock');
+            }
+
+            $('#productDetailModal').modal('show');
+        } else {
+            showToast("Could not load product details.", 'error');
+        }
+    });
+
+    // Handle "Add to Cart" from modal
+    $('#modalAddToCartButton').on('click', function() {
+        const productId = parseInt($(this).data('id'));
+        const productName = $(this).data('name');
+        const productPrice = parseFloat($(this).data('price'));
+        let quantityToAdd = parseInt($('#modalProductQuantity').val());
+
+        if (isNaN(quantityToAdd) || quantityToAdd <= 0) {
+            showToast("Please enter a valid quantity.", 'warning');
+            $('#modalProductQuantity').val(1); // Reset to 1
+            return;
+        }
+
+        const productInCatalog = allProducts.find(p => p.id === productId);
+        if (!productInCatalog) {
+            showToast("Error: Product not found.", 'error');
+            return;
+        }
+
+        if (productInCatalog.inventory < quantityToAdd) {
+            showToast(`Only ${productInCatalog.inventory} of "${productName}" in stock. Cannot add ${quantityToAdd}.`, 'warning');
+            $('#modalProductQuantity').val(productInCatalog.inventory > 0 ? productInCatalog.inventory : 1);
+            return;
+        }
+
+        productInCatalog.inventory -= quantityToAdd;
+        saveProductsToLocalStorage();
+
+        const existingCartItem = cart.find(item => item.id === productId);
+        if (existingCartItem) {
+            existingCartItem.quantity += quantityToAdd;
+        } else {
+            cart.push({ id: productId, name: productName, price: productPrice, quantity: quantityToAdd });
+        }
+
+        saveCartToLocalStorage();
+        showToast(`${quantityToAdd} unit(s) of "${productName}" added to cart.`, 'success');
+        renderCart();
+        renderProducts(currentProducts); // Re-render product grid to reflect stock changes
+
+        $('#productDetailModal').modal('hide'); // Hide modal after adding
+    });
 });
