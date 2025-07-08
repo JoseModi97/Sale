@@ -310,3 +310,27 @@ small.form-text.text-muted { /* Price per item in cart */
 .card.out-of-stock .card-img-top {
     /* filter: grayscale(50%); Example: desaturate image */
 }
+
+/* Product Card Action Row Spacing */
+.card .card-body .mt-2 > .d-flex.mt-1 { /* Targets the flex container for qty and buttons */
+    margin-top: 0.5rem !important; /* Increase space above the button row slightly (was mt-1 which is 0.25rem) */
+}
+
+.card .product-quantity-input {
+    /* width: 60px; is set inline, can override here if needed but 60px is probably fine */
+    margin-right: 0.5rem !important; /* Ensure consistent spacing (Bootstrap mr-2 is 0.5rem) */
+}
+
+.card .add-to-cart.mr-1 { /* Targeting the Add button specifically if it has mr-1 */
+    margin-right: 0.5rem !important; /* Increase to match mr-2, or use a consistent class like mr-2 on it in HTML */
+}
+
+/* Ensure stock display has enough space below it if it's not already handled by button row's top margin */
+.stock-display.mb-1 {
+    margin-bottom: 0.5rem !important; /* Increase space below stock (Bootstrap mb-1 is 0.25rem) */
+}
+
+/* General vertical rhythm in card body's action area */
+.card .card-body .mt-2 { /* This is the div that holds stock display and the action button row */
+    margin-top: 0.75rem !important; /* (Bootstrap mt-2 is 0.5rem) Increase space above stock display */
+}
