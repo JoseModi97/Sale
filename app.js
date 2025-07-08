@@ -103,7 +103,7 @@ $(document).ready(function () {
             cart.forEach((item, index) => {
                 const cartItemHtml = `
                     <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
+                        <div class="cart-item-details"> {/* Added this wrapper */}
                             <span class="cart-item-name">${item.name}</span>
                             <small class="form-text text-muted">$${item.price.toFixed(2)} each</small>
                         </div>

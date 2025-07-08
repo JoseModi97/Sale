@@ -1,37 +1,89 @@
-/* Custom CSS for POS System */
+/* Custom CSS for POS System - Modern Theme */
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa; /* Lighter background for a cleaner look */
+    color: #333;
+}
+
+/* --- Base Theme Styles --- */
+:root {
+    --primary-color: #007bff; /* Bootstrap primary */
+    --secondary-color: #6c757d; /* Bootstrap secondary */
+    --success-color: #28a745; /* Bootstrap success */
+    --danger-color: #dc3545; /* Bootstrap danger */
+    --light-gray: #f1f3f5;
+    --medium-gray: #dee2e6;
+    --dark-gray: #495057;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --card-hover-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    --border-radius: 0.3rem; /* Softer border radius */
+}
 
 /* Ensure product images are a consistent height and fit well */
 .card-img-top {
-    height: 200px;
-    object-fit: contain; /* Scales image to fit within the element's content box */
-    margin-top: 10px; /* Add some space above the image */
+    height: 180px; /* Slightly reduced height */
+    object-fit: contain;
+    padding: 10px; /* Padding around image */
+    background-color: #fff; /* White background for images if they are transparent */
+}
+
+.card {
+    border: none; /* Remove default card border, use shadow instead */
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.3s ease-in-out;
+    margin-bottom: 2rem; /* Increased spacing between cards */
+}
+
+.card:hover {
+    box-shadow: var(--card-hover-shadow);
+}
+
+.card-body {
+    padding: 1.5rem; /* Increased padding in card body */
 }
 
 .card-title {
-    min-height: 3em; /* Ensure card titles have enough space for 2 lines, helps alignment */
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    min-height: 3.2em; /* Adjust if necessary based on font size */
 }
 
-.card-text {
-    font-weight: bold;
+.card-text { /* Used for price */
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
 }
 
 /* Styling for cart items */
 .cart-item-name {
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px; /* Adjust as needed based on layout */
+    font-size: 0.95rem;
+    font-weight: 500;
+    /* Allow wrapping for longer names */
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    max-width: none;
 }
 
 .cart-item-quantity input {
-    width: 50px;
+    width: 60px; /* Slightly wider */
     text-align: center;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--medium-gray);
+    padding: 0.3rem;
 }
 
 /* Sticky panel for cart and totals */
 .sticky-top {
-    top: 20px; /* Offset from the top of the viewport */
+    top: 20px;
+    background-color: #ffffff; /* Give sticky panel a background */
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
 }
 
 /* Ensure the product grid has some minimum height if empty */
@@ -39,18 +91,182 @@
     content: "Loading products...";
     display: block;
     text-align: center;
-    padding: 20px;
+    padding: 30px 20px; /* Increased padding */
     font-style: italic;
-    color: #6c757d; /* Bootstrap muted color */
+    color: var(--secondary-color);
+    font-size: 1.1rem;
 }
 
 /* Error message styling */
 #error-message-container {
     position: fixed;
-    top: 10px;
+    top: 20px; /* More spacing from top */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1050; /* Above most Bootstrap components */
-    width: 80%;
-    max-width: 600px;
+    z-index: 1050;
+    width: auto; /* Adjust width based on content */
+    max-width: 500px;
+    border-radius: var(--border-radius);
+}
+
+/* General Spacing */
+.container-fluid {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600; /* Bolder headings */
+}
+
+h2 { /* Section titles like "Products", "Cart" */
+    margin-bottom: 1.5rem; /* More space below section titles */
+    font-size: 1.75rem;
+    color: var(--dark-gray);
+}
+
+/* Header Styling */
+header.bg-primary {
+    background-color: #fff !important; /* Override Bootstrap primary with white */
+    color: var(--dark-gray) !important; /* Dark text color */
+    padding: 1.5rem 0; /* Increased padding */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle bottom shadow */
+    margin-bottom: 2rem; /* Space below header */
+}
+
+header h1 {
+    font-size: 2rem; /* Adjust size as needed */
+    font-weight: 700; /* Bold title */
+    margin-bottom: 0; /* Remove default margin if any */
+}
+
+/* Button Styling */
+.btn {
+    padding: 0.6rem 1.2rem; /* Larger padding for buttons */
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    text-transform: uppercase; /* Optional: for a more styled look */
+    letter-spacing: 0.5px; /* Optional */
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.btn:active {
+    transform: translateY(1px); /* Subtle press effect */
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0069d9; /* Darker shade of primary */
+    border-color: #0062cc;     /* Slightly darker for border */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Darker shade of success */
+    border-color: #1e7e34;     /* Slightly darker for border */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Darker shade of danger */
+    border-color: #bd2130;     /* Slightly darker for border */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Specific button adjustments if needed */
+.card .btn-primary { /* Add to Cart button */
+    width: 100%; /* Make button full width of card footer area */
+}
+
+/* Cart Panel Styling */
+#cart-items .list-group-item {
+    padding: 1rem 1.25rem; /* Consistent padding with card body */
+    border-bottom: 1px solid var(--light-gray); /* Separator for items */
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-radius: 0; /* Remove individual item radius if panel has one */
+}
+
+#cart-items .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-details { /* Container for name and price */
+    flex-grow: 1;
+    margin-right: 1rem;
+}
+
+small.form-text.text-muted { /* Price per item in cart */
+    color: var(--secondary-color) !important;
+    font-size: 0.85rem;
+}
+
+#cart-empty-message {
+    padding: 2rem;
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+}
+
+/* Cart item remove button */
+#cart-items .btn-danger {
+    padding: 0.25rem 0.5rem; /* Smaller padding for compact button */
+    font-size: 0.8rem; /* Smaller font size */
+    text-transform: none; /* No uppercase for this small button */
+    margin-left: 0.5rem;
+}
+
+/* Totals Area Styling */
+#totals-area {
+    margin-top: 2rem; /* Add space above totals */
+    padding: 1.5rem;
+    background-color: var(--light-gray); /* Subtle background to differentiate */
+    border-radius: var(--border-radius);
+}
+
+#totals-area h4 {
+    margin-bottom: 1rem; /* Space below "Totals" heading */
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+#totals-area .list-group-item {
+    background-color: transparent; /* Inherit from parent */
+    border-color: var(--medium-gray); /* Softer border color */
+    padding: 0.75rem 0; /* Adjust padding, remove horizontal for full width text */
+}
+
+#totals-area .list-group-item:first-child {
+    border-top: none;
+}
+#totals-area .list-group-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+
+#totals-area .font-weight-bold span { /* Total amount */
+    font-size: 1.3rem;
+    color: var(--primary-color);
+}
+
+/* Checkout Button Styling */
+#checkout-button {
+    margin-top: 1.5rem; /* Space above checkout button */
+    padding: 0.8rem 1.5rem; /* Make checkout button prominent */
+    font-size: 1.1rem;
 }
