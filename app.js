@@ -404,11 +404,45 @@ $(document).ready(function () {
             showToast("Your cart is empty.", 'warning');
             return;
         }
+
+        // 1. Gather Data
+        const currentSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const currentTaxAmount = currentSubtotal * taxRate;
+        const currentGrandTotal = currentSubtotal + currentTaxAmount;
+
+        const totalsForInvoice = {
+            subtotal: currentSubtotal,
+            taxAmount: currentTaxAmount,
+            grandTotal: currentGrandTotal
+        };
+
+        // 2. Generate Invoice HTML
+        const invoiceHtml = generateInvoiceHtml([...cart], totalsForInvoice, taxRate); // Pass a copy of cart
+
+        // 3. Open and Print Invoice
+        const invoiceWindow = window.open('', '_blank', 'width=800,height=600');
+        if (invoiceWindow) {
+            invoiceWindow.document.write(invoiceHtml);
+            invoiceWindow.document.close(); // Important for some browsers to finish loading
+
+            // Delay print slightly to ensure content is rendered in the new window
+            setTimeout(() => {
+                invoiceWindow.print();
+                // Optional: Close window after print dialog is handled.
+                // Behavior varies across browsers (e.g., Chrome might close before printing is done by user)
+                // invoiceWindow.onafterprint = function(){ invoiceWindow.close(); };
+            }, 500); // 500ms delay, adjust if needed
+        } else {
+            showToast("Could not open invoice window. Please check your popup blocker.", 'warning');
+        }
+
+        // 4. Proceed with existing checkout actions
         showToast("Checkout successful! Thank you.", 'success');
         cart = [];
         saveCartToLocalStorage();
         renderCart();
-        // Note: Inventory is not "permanently" reduced beyond cart additions in this client-side sim.
+        // Inventory was already adjusted when items were added/modified in cart.
+        // No further inventory changes needed here for this client-side simulation.
     });
 
     $('#clear-cart-button').on('click', function () {
@@ -440,6 +474,103 @@ $(document).ready(function () {
     loadCartFromLocalStorage();
     renderCart();
     fetchProducts(); // This will load from localStorage if available, or fetch from API and init inventory
+
+    // --- Invoice Generation ---
+    function generateInvoiceHtml(cartDetails, totals, taxRate) {
+        const transactionDate = new Date();
+        let itemsHtml = '';
+        cartDetails.forEach(item => {
+            itemsHtml += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td style="text-align:right;">${item.quantity}</td>
+                    <td style="text-align:right;">$${item.price.toFixed(2)}</td>
+                    <td style="text-align:right;">$${(item.price * item.quantity).toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        const invoiceHtml = `
+            <html>
+            <head>
+                <title>Invoice / Receipt</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+                    .invoice-container { width: 100%; max-width: 800px; margin: auto; padding: 20px; border: 1px solid #eee; }
+                    h1, h2, h3 { text-align: center; color: #333; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background-color: #f2f2f2; }
+                    .totals { float: right; width: 300px; margin-top: 20px; }
+                    .totals table { width: 100%; }
+                    .totals th, .totals td { border: none; padding: 5px; }
+                    .totals th { text-align: left; }
+                    .totals td { text-align: right; }
+                    .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #777; }
+                    .item-details { margin-bottom: 30px; }
+                    .store-name { font-size: 2em; font-weight: bold; margin-bottom:0; }
+                    .receipt-title { font-size: 1.5em; margin-top:0; margin-bottom: 20px; }
+                    .date-time { text-align:center; margin-bottom:20px; font-size: 0.9em; }
+                    @media print {
+                        body { margin: 0; color: #000; background-color: #fff; }
+                        .invoice-container { border: none; box-shadow: none; padding: 0; }
+                        .no-print { display: none !important; }
+                        /* Additional print-specific styles if needed */
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="invoice-container">
+                    <h1 class="store-name">Awesome POS Store</h1>
+                    <h2 class="receipt-title">RECEIPT</h2>
+                    <div class="date-time">
+                        Date: ${transactionDate.toLocaleDateString()}<br>
+                        Time: ${transactionDate.toLocaleTimeString()}
+                    </div>
+
+                    <div class="item-details">
+                        <h3>Order Details</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th style="text-align:right;">Qty</th>
+                                    <th style="text-align:right;">Unit Price</th>
+                                    <th style="text-align:right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="totals">
+                        <table>
+                            <tr>
+                                <th>Subtotal:</th>
+                                <td>$${totals.subtotal.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <th>Tax (${(taxRate * 100).toFixed(0)}%):</th>
+                                <td>$${totals.taxAmount.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <th style="font-weight:bold; font-size: 1.1em;">Grand Total:</th>
+                                <td style="font-weight:bold; font-size: 1.1em;">$${totals.grandTotal.toFixed(2)}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <div class="footer">
+                        Thank you for your purchase!
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+        return invoiceHtml;
+    }
 
     // --- Item Detail Modal Logic ---
     $(document).on('click', '.view-details', function () {
