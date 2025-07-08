@@ -1,0 +1,56 @@
+/* Custom CSS for POS System */
+
+/* Ensure product images are a consistent height and fit well */
+.card-img-top {
+    height: 200px;
+    object-fit: contain; /* Scales image to fit within the element's content box */
+    margin-top: 10px; /* Add some space above the image */
+}
+
+.card-title {
+    min-height: 3em; /* Ensure card titles have enough space for 2 lines, helps alignment */
+}
+
+.card-text {
+    font-weight: bold;
+}
+
+/* Styling for cart items */
+.cart-item-name {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px; /* Adjust as needed based on layout */
+}
+
+.cart-item-quantity input {
+    width: 50px;
+    text-align: center;
+}
+
+/* Sticky panel for cart and totals */
+.sticky-top {
+    top: 20px; /* Offset from the top of the viewport */
+}
+
+/* Ensure the product grid has some minimum height if empty */
+#product-grid:empty::before {
+    content: "Loading products...";
+    display: block;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #6c757d; /* Bootstrap muted color */
+}
+
+/* Error message styling */
+#error-message-container {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050; /* Above most Bootstrap components */
+    width: 80%;
+    max-width: 600px;
+}
