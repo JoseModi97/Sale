@@ -351,8 +351,14 @@ $(document).ready(function () {
     $(document).on('click', '.remove-from-cart', function () {
         const itemIndex = parseInt($(this).data('index'));
 
-        const cartItem = cart[itemIndex];
-        if (!cartItem) return; // Should not happen
+        // Ensure itemIndex is a valid index for the cart array
+        if (isNaN(itemIndex) || itemIndex < 0 || itemIndex >= cart.length) {
+            console.error("Invalid itemIndex for cart removal:", itemIndex, "Cart length:", cart.length);
+            showToast("Error: Could not remove item. Invalid data.", 'error');
+            return; // Exit if index is invalid
+        }
+
+        const cartItem = cart[itemIndex]; // Now we know itemIndex is valid
 
         const productInCatalog = allProducts.find(p => p.id === cartItem.id);
         if (productInCatalog) {
