@@ -270,3 +270,23 @@ small.form-text.text-muted { /* Price per item in cart */
     padding: 0.8rem 1.5rem; /* Make checkout button prominent */
     font-size: 1.1rem;
 }
+
+/* Category Filter Buttons */
+#category-filters {
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    margin-bottom: 1.5rem; /* Space below filters */
+}
+
+.category-filter-btn {
+    /* Use default .btn styles and Bootstrap's .btn-outline-secondary */
+    text-transform: capitalize; /* Capitalize category names if needed */
+    margin-right: 0.5rem !important; /* Override Bootstrap margin if any for spacing */
+    margin-bottom: 0.5rem !important;
+}
+
+.category-filter-btn.active {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+}

@@ -8,6 +8,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Font: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Toast Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Custom CSS -->
     <link href="styles.css" rel="stylesheet">
 </head>
@@ -20,7 +22,15 @@
         <div class="row">
             <!-- Product Catalog -->
             <div class="col-md-7">
-                <h2>Products</h2>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Products</h2>
+                    <div id="search-container" style="flex-grow: 0.4;">
+                        <input type="text" id="search-input" class="form-control" placeholder="Search products by name or description...">
+                    </div>
+                </div>
+                <div id="category-filters" class="mb-3">
+                    <!-- Category filter buttons will be inserted here by app.js -->
+                </div>
                 <div id="product-grid" class="row">
                     <!-- Product cards will be inserted here by app.js -->
                 </div>
@@ -67,5 +77,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="app.js"></script>
+
+    <!-- Toast Container -->
+    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 1055; min-width: 250px;">
+        <div id="toast-container" style="position: absolute; top: 0; right: 0;">
+            <!-- Toasts will be appended here -->
+        </div>
+    </div>
 </body>
 </html>
