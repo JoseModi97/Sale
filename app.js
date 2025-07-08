@@ -161,24 +161,12 @@ $(document).ready(function () {
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">${product.title}</h5>
                             <p class="card-text mt-auto font-weight-bold">$${product.price.toFixed(2)}</p>
-                            <div class="mt-2">
-                                <p class="mb-1 stock-display ${stock > 0 ? 'text-success' : 'text-danger'}">
-                                    ${stock > 0 ? `In Stock: ${stock}` : 'Out of Stock'}
+                            <div class="mt-2"> <!-- Container for stock and action buttons -->
+                                <p class="mb-1 stock-display">
+                                    ${stock > 0 ? `<i class="fas fa-check-circle text-success mr-1"></i><span class="text-success">In Stock: ${stock}</span>` : `<i class="fas fa-ban text-danger mr-1"></i><span class="text-danger">Out of Stock</span>`}
                                 </p>
-                                <div class="d-flex mt-1 align-items-center"> <!-- Flex container for qty and button -->
-                                <p class="mb-1 stock-display ${stock > 0 ? 'text-success' : 'text-danger'}">
-                                    ${stock > 0 ? `In Stock: ${stock}` : 'Out of Stock'}
-                                </p>
-                                <div class="d-flex mt-1 align-items-center"> <!-- Flex container for qty and button -->
-                                    <input type="number" class="form-control form-control-sm product-quantity-input mr-2" value="1" min="1" max="${stock > 0 ? stock : 1}" ${stock <= 0 ? 'disabled' : ''} style="width: 60px;">
-                                    <button class="btn btn-primary btn-sm add-to-cart flex-grow-1 mr-1"
-                                            data-id="${product.id}"
-                                            data-name="${product.title}"
-                                            data-price="${product.price.toFixed(2)}"
-                                            ${stock <= 0 ? 'disabled' : ''}>
-                                        Add
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm view-details flex-grow-1" data-id="${product.id}">Details</button>
+                                <div class="d-flex mt-1 align-items-center">
+                                    ${actionButtonsHtml}
                                 </div>
                             </div>
                         </div>
