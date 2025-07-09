@@ -46,6 +46,22 @@ $(document).ready(function () {
         $('#snackbar').removeClass('show');
     });
 
+    // Click/Tap on snackbar message to see full message if truncated
+    $(document).on('click', '#snackbar-message', function() {
+        const $snackbarMessage = $(this);
+        const fullMessage = $snackbarMessage.attr('title'); // Get full message from title attribute
+
+        // Check if text is actually truncated (scrollWidth > clientWidth)
+        if ($snackbarMessage[0].scrollWidth > $snackbarMessage[0].clientWidth) {
+            if (fullMessage) { // Ensure there's a message to show
+                $('#fullMessageModalBody').text(fullMessage);
+                $('#fullMessageModal').modal('show');
+            }
+        }
+        // Optional: If not truncated, one might choose to do nothing on click,
+        // or still show the modal for consistency. Current logic only shows modal if truncated.
+    });
+
     // --- localStorage Functions ---
     function saveCartToLocalStorage() {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));

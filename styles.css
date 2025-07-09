@@ -487,6 +487,7 @@ small.form-text.text-muted { /* Price per item in cart */
     /* The snackbar's padding-right should account for the close button's width. */
     max-width: calc(100% - 30px); /* Approximate calculation if close button is ~30px wide with its padding */
                                   /* More robust might be to make message a flex-grow item if snackbar is d-flex */
+    cursor: pointer; /* Indicate it's clickable/tappable */
 }
 
 #snackbar-close {
