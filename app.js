@@ -25,7 +25,7 @@ $(document).ready(function () {
         clearTimeout(snackbarTimer);
 
         // Set message and type class
-        $snackbarMessage.text(message);
+        $snackbarMessage.text(message).attr('title', message); // Add title attribute for tooltip
         // Remove all possible type classes then add the current one
         $snackbar.removeClass('success error warning info').addClass(type);
 
