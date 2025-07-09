@@ -435,6 +435,8 @@ small.form-text.text-muted { /* Price per item in cart */
 .snackbar {
     visibility: hidden; /* Initially hidden */
     min-width: 280px; /* Minimum width */
+    max-width: 500px; /* Max width for snackbar, helps with truncation */
+    /* Or use viewport units e.g., max-width: 90vw; */
     background-color: #333; /* Default dark background */
     color: #fff; /* Default white text */
     text-align: left; /* Align text to the left */
@@ -476,8 +478,15 @@ small.form-text.text-muted { /* Price per item in cart */
 }
 
 #snackbar-message {
-    display: inline-block;
+    display: inline-block; /* Or block if it's the only child taking width */
     vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Ensure it doesn't push the close button out if snackbar padding is tight. */
+    /* The snackbar's padding-right should account for the close button's width. */
+    max-width: calc(100% - 30px); /* Approximate calculation if close button is ~30px wide with its padding */
+                                  /* More robust might be to make message a flex-grow item if snackbar is d-flex */
 }
 
 #snackbar-close {
