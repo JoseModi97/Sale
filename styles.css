@@ -420,3 +420,13 @@ small.form-text.text-muted { /* Price per item in cart */
 .skeleton-filter-button {
      /* Height, width, margin are set inline in HTML */
 }
+
+/* Custom styling for disabled primary button to ensure consistent layout */
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background-color: #6c757d; /* Bootstrap's standard secondary/disabled gray */
+    border-color: #6c757d;
+    color: #fff; /* Text color on gray background */
+    opacity: 0.65; /* Standard Bootstrap opacity for disabled state */
+    /* Ensure no padding/margin changes that would affect layout */
+}
