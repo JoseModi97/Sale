@@ -430,3 +430,87 @@ small.form-text.text-muted { /* Price per item in cart */
     opacity: 0.65; /* Standard Bootstrap opacity for disabled state */
     /* Ensure no padding/margin changes that would affect layout */
 }
+
+/* Snackbar Styles */
+.snackbar {
+    visibility: hidden; /* Initially hidden */
+    min-width: 280px; /* Minimum width */
+    background-color: #333; /* Default dark background */
+    color: #fff; /* Default white text */
+    text-align: left; /* Align text to the left */
+    border-radius: var(--border-radius); /* Use theme's border radius */
+    padding: 14px 20px;
+    padding-right: 50px; /* Space for the close button */
+    position: fixed;
+    z-index: 1060; /* Above most other content like modals (Bootstrap modals are often 1050) */
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 30px; /* Position at the bottom center */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0; /* For fade-in/out transition */
+    transition: opacity 0.3s, bottom 0.3s, visibility 0.3s linear;
+}
+
+.snackbar.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px; /* Slide up effect */
+}
+
+/* Different types of snackbars */
+.snackbar.success {
+    background-color: var(--success-color); /* #28a745 */
+    color: #fff;
+}
+.snackbar.error {
+    background-color: var(--danger-color); /* #dc3545 */
+    color: #fff;
+}
+.snackbar.warning {
+    background-color: #ffc107; /* Bootstrap warning yellow */
+    color: #212529; /* Dark text for yellow background */
+}
+.snackbar.info {
+    background-color: #17a2b8; /* Bootstrap info cyan */
+    color: #fff;
+}
+
+#snackbar-message {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#snackbar-close {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: inherit; /* Inherit color from snackbar type, or set explicitly */
+    font-size: 1.5rem;
+    line-height: 1;
+    opacity: 0.7;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+#snackbar-close:hover {
+    opacity: 1;
+}
+
+/* Comment out or remove old #error-message-container if snackbar replaces it too */
+/*
+#error-message-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    width: auto;
+    max-width: 500px;
+    border-radius: var(--border-radius);
+}
+*/
+
+/* Note: Bootstrap's .toast styles are separate and will remain unless Bootstrap CSS is modified */

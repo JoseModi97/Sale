@@ -6,59 +6,45 @@ $(document).ready(function () {
     let currentProducts = []; // To store products currently being displayed (after filtering)
     let selectedCategory = 'all'; // To store the selected category
     let searchTerm = ''; // To store the current search term
+    let snackbarTimer; // Timer for auto-hiding snackbar
 
     // --- localStorage Keys ---
     const CART_STORAGE_KEY = 'posCart';
     const PRODUCTS_STORAGE_KEY = 'posProducts';
 
     // --- UI Helper Functions ---
-    function displayErrorMessage(message) {
-        $('#error-message-container').remove();
-        const errorHtml = `
-            <div id="error-message-container" class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        `;
-        $('body').prepend(errorHtml);
+    function displayErrorMessage(message) { // Now uses showSnackbar
+        showSnackbar(message, 'error');
     }
 
-    function showToast(message, type = 'info') {
-        const toastId = 'toast-' + new Date().getTime();
-        let toastHeaderClass = 'bg-info text-white';
-        let toastIcon = '<i class="fas fa-info-circle mr-2"></i>';
+    function showSnackbar(message, type = 'info') {
+        const $snackbar = $('#snackbar');
+        const $snackbarMessage = $('#snackbar-message');
 
-        switch (type) {
-            case 'success':
-                toastHeaderClass = 'bg-success text-white';
-                toastIcon = '<i class="fas fa-check-circle mr-2"></i>';
-                break;
-            case 'error':
-                toastHeaderClass = 'bg-danger text-white';
-                toastIcon = '<i class="fas fa-exclamation-triangle mr-2"></i>';
-                break;
-            case 'warning':
-                toastHeaderClass = 'bg-warning text-dark';
-                toastIcon = '<i class="fas fa-exclamation-circle mr-2"></i>';
-                break;
-        }
+        // Clear any existing timer
+        clearTimeout(snackbarTimer);
 
-        const toastHtml = `
-            <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
-                <div class="toast-header ${toastHeaderClass}">
-                    ${toastIcon}
-                    <strong class="mr-auto">Notification</strong>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                        <span aria-hidden="true" class="${type === 'warning' ? '' : 'text-white'}">&times;</span>
-                    </button>
-                </div>
-                <div class="toast-body">${message}</div>
-            </div>`;
-        $('#toast-container').append(toastHtml);
-        $('#' + toastId).toast('show').on('hidden.bs.toast', function () { $(this).remove(); });
+        // Set message and type class
+        $snackbarMessage.text(message);
+        // Remove all possible type classes then add the current one
+        $snackbar.removeClass('success error warning info').addClass(type);
+
+        // Show snackbar
+        $snackbar.addClass('show');
+
+        // Auto-hide after a delay
+        snackbarTimer = setTimeout(function() {
+            $snackbar.removeClass('show');
+        }, 4000); // 4 seconds, can be adjusted
     }
+
+    // Close snackbar button handler - place it once in the ready scope
+    // This was missing from the previous plan step, so adding it here.
+    // Ensure it's not re-bound if this whole ready block runs again (not an issue here)
+    $(document).on('click', '#snackbar-close', function() {
+        clearTimeout(snackbarTimer); // Clear auto-hide timer
+        $('#snackbar').removeClass('show');
+    });
 
     // --- localStorage Functions ---
     function saveCartToLocalStorage() {
@@ -294,7 +280,7 @@ $(document).ready(function () {
         let quantityToAdd = parseInt($quantityInput.val());
 
         if (isNaN(quantityToAdd) || quantityToAdd <= 0) {
-            showToast("Please enter a valid quantity.", 'warning');
+            showSnackbar("Please enter a valid quantity.", 'warning');
             $quantityInput.val(1); // Reset to 1
             return;
         }
@@ -302,12 +288,12 @@ $(document).ready(function () {
         const productInCatalog = allProducts.find(p => p.id === productId);
 
         if (!productInCatalog) {
-            showToast("Error: Product not found.", 'error');
+            showSnackbar("Error: Product not found.", 'error');
             return;
         }
 
         if (productInCatalog.inventory < quantityToAdd) {
-            showToast(`Only ${productInCatalog.inventory} of "${productName}" in stock. Cannot add ${quantityToAdd}.`, 'warning');
+            showSnackbar(`Only ${productInCatalog.inventory} of "${productName}" in stock. Cannot add ${quantityToAdd}.`, 'warning');
             $quantityInput.val(productInCatalog.inventory > 0 ? productInCatalog.inventory : 1); // Adjust to max available or 1
              if(productInCatalog.inventory === 0) $quantityInput.prop('disabled', true);
             return;
@@ -326,7 +312,7 @@ $(document).ready(function () {
         }
 
         saveCartToLocalStorage();
-        showToast(`${quantityToAdd} unit(s) of "${productName}" added to cart.`, 'success');
+        showSnackbar(`${quantityToAdd} unit(s) of "${productName}" added to cart.`, 'success');
         renderCart();
 
         // Re-render products to update stock display, button state, and max value of quantity input
@@ -348,7 +334,7 @@ $(document).ready(function () {
 
         const productInCatalog = allProducts.find(p => p.id === cartItem.id);
         if (!productInCatalog) {
-            showToast("Error: Product data not found for cart item.", 'error');
+            showSnackbar("Error: Product data not found for cart item.", 'error');
             return;
         }
 
@@ -358,12 +344,12 @@ $(document).ready(function () {
         if (newQuantity <= 0) { // Removing item or invalid input treated as removal
             productInCatalog.inventory += oldQuantity; // Return all stock of this item
             cart.splice(itemIndex, 1);
-            showToast(`"${cartItem.name}" removed from cart.`, 'info');
+            showSnackbar(`"${cartItem.name}" removed from cart.`, 'info');
         } else {
             if (quantityChange > 0) { // Trying to increase quantity
                 if (productInCatalog.inventory < quantityChange) {
                     // Not enough additional stock available
-                    showToast(`Cannot increase quantity. Only ${productInCatalog.inventory} more "${productInCatalog.name}" in stock.`, 'warning');
+                    showSnackbar(`Cannot increase quantity. Only ${productInCatalog.inventory} more "${productInCatalog.name}" in stock.`, 'warning');
                     // Set quantity to max possible (current cart quantity + available inventory)
                     cartItem.quantity = oldQuantity + productInCatalog.inventory;
                     productInCatalog.inventory = 0; // All remaining stock taken
@@ -390,7 +376,7 @@ $(document).ready(function () {
         // Ensure itemIndex is a valid index for the cart array
         if (isNaN(itemIndex) || itemIndex < 0 || itemIndex >= cart.length) {
             console.error("Invalid itemIndex for cart removal:", itemIndex, "Cart length:", cart.length);
-            showToast("Error: Could not remove item. Invalid data.", 'error');
+            showSnackbar("Error: Could not remove item. Invalid data.", 'error');
             return; // Exit if index is invalid
         }
 
@@ -401,14 +387,14 @@ $(document).ready(function () {
             productInCatalog.inventory += cartItem.quantity; // Return the quantity to stock
             saveProductsToLocalStorage(); // Persist inventory change
         } else {
-            showToast(`Error: Could not find product (ID: ${cartItem.id}) in catalog to restock.`, 'error');
+            showSnackbar(`Error: Could not find product (ID: ${cartItem.id}) in catalog to restock.`, 'error');
         }
 
         const removedItemName = cartItem.name; // Get name before splicing
         cart.splice(itemIndex, 1);
 
         saveCartToLocalStorage();
-        showToast(`"${removedItemName}" removed from cart.`, 'info');
+        showSnackbar(`"${removedItemName}" removed from cart.`, 'info');
         renderCart();
         renderProducts(currentProducts); // Update product grid (stock display, button states)
     });
@@ -418,7 +404,7 @@ $(document).ready(function () {
         const isModalCheckout = $(this).attr('id') === 'checkout-button-modal';
 
         if (cart.length === 0) {
-            showToast("Your cart is empty.", 'warning');
+            showSnackbar("Your cart is empty.", 'warning');
             return;
         }
 
@@ -450,11 +436,11 @@ $(document).ready(function () {
                 // invoiceWindow.onafterprint = function(){ invoiceWindow.close(); };
             }, 500); // 500ms delay, adjust if needed
         } else {
-            showToast("Could not open invoice window. Please check your popup blocker.", 'warning');
+            showSnackbar("Could not open invoice window. Please check your popup blocker.", 'warning');
         }
 
         // 4. Proceed with existing checkout actions
-        showToast("Checkout successful! Thank you.", 'success');
+        showSnackbar("Checkout successful! Thank you.", 'success');
         cart = [];
         saveCartToLocalStorage();
         renderCart();
@@ -470,7 +456,7 @@ $(document).ready(function () {
         const isModalClear = $(this).attr('id') === 'clear-cart-button-modal';
 
         if (cart.length === 0) {
-            showToast("Cart is already empty.", 'info');
+            showSnackbar("Cart is already empty.", 'info');
             return;
         }
 
@@ -487,7 +473,7 @@ $(document).ready(function () {
             cart = []; // Clear the in-memory cart
             saveCartToLocalStorage(); // Update localStorage for cart
 
-            showToast("Cart cleared.", 'info');
+            showSnackbar("Cart cleared.", 'info');
             renderCart(); // Update cart UI
             renderProducts(currentProducts); // Update product grid (stock display, button states)
 
@@ -631,7 +617,7 @@ $(document).ready(function () {
 
             $('#productDetailModal').modal('show');
         } else {
-            showToast("Could not load product details.", 'error');
+            showSnackbar("Could not load product details.", 'error');
         }
     });
 
@@ -643,19 +629,19 @@ $(document).ready(function () {
         let quantityToAdd = parseInt($('#modalProductQuantity').val());
 
         if (isNaN(quantityToAdd) || quantityToAdd <= 0) {
-            showToast("Please enter a valid quantity.", 'warning');
+            showSnackbar("Please enter a valid quantity.", 'warning');
             $('#modalProductQuantity').val(1); // Reset to 1
             return;
         }
 
         const productInCatalog = allProducts.find(p => p.id === productId);
         if (!productInCatalog) {
-            showToast("Error: Product not found.", 'error');
+            showSnackbar("Error: Product not found.", 'error');
             return;
         }
 
         if (productInCatalog.inventory < quantityToAdd) {
-            showToast(`Only ${productInCatalog.inventory} of "${productName}" in stock. Cannot add ${quantityToAdd}.`, 'warning');
+            showSnackbar(`Only ${productInCatalog.inventory} of "${productName}" in stock. Cannot add ${quantityToAdd}.`, 'warning');
             $('#modalProductQuantity').val(productInCatalog.inventory > 0 ? productInCatalog.inventory : 1);
             return;
         }
@@ -671,7 +657,7 @@ $(document).ready(function () {
         }
 
         saveCartToLocalStorage();
-        showToast(`${quantityToAdd} unit(s) of "${productName}" added to cart.`, 'success');
+        showSnackbar(`${quantityToAdd} unit(s) of "${productName}" added to cart.`, 'success');
         renderCart();
         renderProducts(currentProducts); // Re-render product grid to reflect stock changes
 
