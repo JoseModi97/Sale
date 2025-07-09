@@ -334,3 +334,26 @@ small.form-text.text-muted { /* Price per item in cart */
 .card .card-body .mt-2 { /* This is the div that holds stock display and the action button row */
     margin-top: 0.75rem !important; /* (Bootstrap mt-2 is 0.5rem) Increase space above stock display */
 }
+
+/* Cart Modal Specific Styles */
+#cartModal .modal-body {
+    /* modal-dialog-scrollable makes this scroll, but we can set a max-height for the items list specifically */
+}
+
+#cart-items-modal {
+    max-height: 40vh; /* Example: 40% of viewport height, adjust as needed */
+    overflow-y: auto;
+    margin-bottom: 1rem; /* Space before totals in modal */
+}
+
+#totals-area-modal {
+    /* Ensure totals are clearly visible below scrollable items */
+}
+
+/* Header cart badge - basic styling, can be enhanced */
+#cart-item-count-badge {
+    font-size: 0.75em;
+    padding: .25em .4em;
+    position: relative;
+    top: -2px; /* Slight adjustment for alignment */
+}
