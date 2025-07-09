@@ -541,3 +541,53 @@ small.form-text.text-muted { /* Price per item in cart */
 */
 
 /* Note: Bootstrap's .toast styles are separate and will remain unless Bootstrap CSS is modified */
+
+/* --- Modal Content Responsiveness --- */
+.modal-body #modalProductName,
+.modal-body #modalProductDescription,
+.modal-body #fullMessageModalBody {
+    word-wrap: break-word; /* Older browsers */
+    overflow-wrap: break-word; /* Standard */
+    -webkit-hyphens: auto; /* Optional: for better word breaking if language is set */
+    -ms-hyphens: auto;
+    hyphens: auto;
+    white-space: normal; /* Ensure it's not set to nowrap by other styles */
+}
+
+/* Ensure .cart-item-name, which is also in modal, has robust wrapping */
+.cart-item-name { /* Already has white-space: normal; from existing rules */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.modal-body img { /* General rule for images in modal body if not covered by img-fluid */
+    max-width: 100%;
+    height: auto;
+}
+
+/* Specific adjustments for cart items within the modal */
+#cart-items-modal .list-group-item {
+    /* Ensure flex items behave well */
+}
+
+#cart-items-modal .cart-item-details {
+    /* flex-grow: 1; is already applied via .cart-item-details in general */
+    /* margin-right: 1rem; is already applied via .cart-item-details in general */
+    /* Adding min-width to prevent excessive shrinking if item names are short and quantity controls are wider */
+    min-width: 0; /* Allows flex item to shrink below its content size if needed */
+}
+
+#cart-items-modal .d-flex.align-items-center { /* Container for quantity input and remove button */
+    flex-shrink: 0; /* Prevent this container from shrinking due to long item names */
+}
+
+/* Address potential for modal-lg to be too wide on very small screens if Bootstrap defaults aren't sufficient */
+/* This is more about the dialog than content, but can be related if dialog is forced too wide */
+@media (max-width: 575.98px) { /* xs screens, Bootstrap's breakpoint */
+    .modal-dialog.modal-lg {
+        /* Bootstrap's default for modal-dialog on small screens is margin: .5rem; */
+        /* For modal-lg, max-width is 800px. This might be too wide. */
+        /* We can reduce its max-width here if needed, but the primary goal is internal content. */
+        /* Example: max-width: calc(100% - 20px); */
+    }
+}
