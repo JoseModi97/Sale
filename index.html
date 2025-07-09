@@ -167,11 +167,10 @@
     <!-- Custom JS -->
     <script src="app.js"></script>
 
-    <!-- Toast Container -->
-    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 1055; min-width: 250px;">
-        <div id="toast-container" style="position: absolute; top: 0; right: 0;">
-            <!-- Toasts will be appended here -->
-        </div>
+    <!-- Snackbar Container -->
+    <div id="snackbar" class="snackbar">
+        <span id="snackbar-message"></span>
+        <button id="snackbar-close" type="button">&times;</button>
     </div>
 
     <!-- Product Detail Modal -->
