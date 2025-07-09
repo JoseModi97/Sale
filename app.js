@@ -155,7 +155,7 @@ $(document).ready(function () {
             }
 
             const productCard = `
-                <div class="col-lg-4 col-md-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-4 mb-4"> {/* Added col-12 for explicit stacking on XS */}
                     <div class="card h-100 ${outOfStockClass}">
                         <img src="${product.image}" class="card-img-top" alt="${product.title}">
                         <div class="card-body d-flex flex-column">
@@ -218,14 +218,22 @@ $(document).ready(function () {
     }
 
     // --- Cart Functions ---
+    function updateCartItemCountBadge() {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        $('#cart-item-count-badge').text(totalItems);
+    }
+
     function renderCart() {
-        const $cartItems = $('#cart-items').empty();
-        const $cartEmptyMessage = $('#cart-empty-message');
+        // Target both sidebar and modal elements
+        const $cartItemsTargets = $('#cart-items-sidebar, #cart-items-modal');
+        const $cartEmptyMessageTargets = $('#cart-empty-message-sidebar, #cart-empty-message-modal');
+
+        $cartItemsTargets.empty(); // Clear previous items
 
         if (cart.length === 0) {
-            $cartEmptyMessage.show();
+            $cartEmptyMessageTargets.show();
         } else {
-            $cartEmptyMessage.hide();
+            $cartEmptyMessageTargets.hide();
             cart.forEach((item, index) => {
                 const cartItemHtml = `
                     <div class="list-group-item d-flex justify-content-between align-items-center">
@@ -238,10 +246,14 @@ $(document).ready(function () {
                             <button class="btn btn-danger btn-sm remove-from-cart" data-index="${index}">&times;</button>
                         </div>
                     </div>`;
-                $cartItems.append(cartItemHtml);
+                // Append to both sidebar and modal item lists
+                // Note: This means remove buttons and quantity inputs will have duplicate dynamic behavior
+                // if not handled carefully by event delegation (which we are using, so it should be okay).
+                $cartItemsTargets.append(cartItemHtml);
             });
         }
         calculateTotals();
+        updateCartItemCountBadge(); // Update badge
     }
 
     function calculateTotals() {
@@ -249,9 +261,11 @@ $(document).ready(function () {
         cart.forEach(item => { subtotal += item.price * item.quantity; });
         const tax = subtotal * taxRate;
         const total = subtotal + tax;
-        $('#subtotal').text(`$${subtotal.toFixed(2)}`);
-        $('#tax').text(`$${tax.toFixed(2)}`);
-        $('#total').text(`$${total.toFixed(2)}`);
+
+        // Update totals in both sidebar and modal
+        $('#subtotal-sidebar, #subtotal-modal').text(`$${subtotal.toFixed(2)}`);
+        $('#tax-sidebar, #tax-modal').text(`$${tax.toFixed(2)}`);
+        $('#total-sidebar, #total-modal').text(`$${total.toFixed(2)}`);
     }
 
     // --- Event Handlers ---
@@ -399,7 +413,10 @@ $(document).ready(function () {
         renderProducts(currentProducts); // Update product grid (stock display, button states)
     });
 
-    $('#checkout-button').on('click', function () {
+    // Combined event handlers for sidebar and modal cart actions
+    $(document).on('click', '#checkout-button-sidebar, #checkout-button-modal', function () {
+        const isModalCheckout = $(this).attr('id') === 'checkout-button-modal';
+
         if (cart.length === 0) {
             showToast("Your cart is empty.", 'warning');
             return;
@@ -443,9 +460,15 @@ $(document).ready(function () {
         renderCart();
         // Inventory was already adjusted when items were added/modified in cart.
         // No further inventory changes needed here for this client-side simulation.
+
+        if (isModalCheckout) {
+            $('#cartModal').modal('hide');
+        }
     });
 
-    $('#clear-cart-button').on('click', function () {
+    $(document).on('click', '#clear-cart-button-sidebar, #clear-cart-button-modal', function () {
+        const isModalClear = $(this).attr('id') === 'clear-cart-button-modal';
+
         if (cart.length === 0) {
             showToast("Cart is already empty.", 'info');
             return;
@@ -467,6 +490,11 @@ $(document).ready(function () {
             showToast("Cart cleared.", 'info');
             renderCart(); // Update cart UI
             renderProducts(currentProducts); // Update product grid (stock display, button states)
+
+            if (isModalClear && cart.length === 0) { // Also hide modal if cleared from modal and now empty
+                // Or simply always hide if cleared from modal:
+                // $('#cartModal').modal('hide');
+            }
         }
     });
 
