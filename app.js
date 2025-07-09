@@ -142,15 +142,15 @@ $(document).ready(function () {
 
             if (stock > 0) {
                 actionButtonsHtml = `
-                    <input type="number" class="form-control form-control-sm product-quantity-input mr-2" value="1" min="1" max="${stock}" style="width: 60px;" data-product-id="${product.id}">
-                    <button class="btn btn-primary btn-sm add-to-cart flex-grow-1 mr-1" data-id="${product.id}" data-name="${product.title}" data-price="${product.price.toFixed(2)}">
+                    <input type="number" class="form-control form-control-sm product-quantity-input" value="1" min="1" max="${stock}" style="width: 60px;" data-product-id="${product.id}">
+                    <button class="btn btn-primary btn-sm add-to-cart flex-grow-1" data-id="${product.id}" data-name="${product.title}" data-price="${product.price.toFixed(2)}">
                         Add
                     </button>
                     <button class="btn btn-outline-secondary btn-sm view-details flex-grow-1" data-id="${product.id}">Details</button>`;
             } else {
                 actionButtonsHtml = `
-                    <input type="number" class="form-control form-control-sm product-quantity-input mr-2" value="1" min="1" disabled style="width: 60px;" data-product-id="${product.id}">
-                    <button class="btn btn-primary btn-sm add-to-cart flex-grow-1 mr-1" data-id="${product.id}" data-name="${product.title}" data-price="${product.price.toFixed(2)}" disabled>
+                    <input type="number" class="form-control form-control-sm product-quantity-input" value="1" min="1" disabled style="width: 60px;" data-product-id="${product.id}">
+                    <button class="btn btn-primary btn-sm add-to-cart flex-grow-1" data-id="${product.id}" data-name="${product.title}" data-price="${product.price.toFixed(2)}" disabled>
                         Add
                     </button>
                     <button class="btn btn-outline-secondary btn-sm view-details flex-grow-1" data-id="${product.id}">Details</button>`;
@@ -167,7 +167,7 @@ $(document).ready(function () {
                                 <p class="mb-1 stock-display">
                                     ${stock > 0 ? `<i class="fas fa-check-circle text-success mr-1"></i><span class="text-success">In Stock: ${stock}</span>` : `<i class="fas fa-ban text-danger mr-1"></i><span class="text-danger">Out of Stock</span>`}
                                 </p>
-                                <div class="d-flex mt-1 align-items-center">
+                                <div class="d-flex mt-1 align-items-center card-action-row"> {/* Added card-action-row class */}
                                     ${actionButtonsHtml}
                                 </div>
                             </div>

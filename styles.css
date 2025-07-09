@@ -431,6 +431,23 @@ small.form-text.text-muted { /* Price per item in cart */
     /* Ensure no padding/margin changes that would affect layout */
 }
 
+/* Product Card Action Row for Stacking */
+.card-action-row {
+    flex-wrap: wrap;
+    gap: 0.5rem; /* Spacing for both horizontal and vertical gaps when wrapped */
+}
+
+.card-action-row > .product-quantity-input {
+    flex: 1 1 60px; /* Grow, Shrink, Basis - basis matches its fixed width */
+    /* min-width: 60px; /* Explicit min-width if basis alone isn't enough */
+}
+
+.card-action-row > .btn { /* Target both add-to-cart and view-details buttons */
+    flex: 1 1 80px; /* Grow, Shrink, Basis - allow buttons to be a bit wider before wrapping */
+    /* min-width: 80px; /* Or a value based on padding + text */
+}
+
+
 /* Snackbar Styles */
 .snackbar {
     visibility: hidden; /* Initially hidden */
