@@ -357,3 +357,66 @@ small.form-text.text-muted { /* Price per item in cart */
     position: relative;
     top: -2px; /* Slight adjustment for alignment */
 }
+
+/* Skeleton Loading Styles */
+.skeleton {
+    background-color: #e0e0e0; /* Base skeleton color */
+    border-radius: var(--border-radius); /* Use theme's border radius */
+    position: relative;
+    overflow: hidden; /* Important for shimmer effect */
+}
+
+.skeleton::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%; /* Start shimmer off-screen to the left */
+    height: 100%;
+    width: 150%; /* Shimmer width */
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.5) 50%, /* Shimmer color and opacity */
+        transparent 100%
+    );
+    animation: shimmer 1.5s infinite; /* Animation properties */
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(100%); /* Move shimmer to the right */
+    }
+}
+
+/* Specific skeleton element types */
+.skeleton-image {
+    /* Height and margin are set inline in HTML for now, can be class-based */
+}
+
+.skeleton-text {
+    background-color: #e0e0e0; /* Ensure text lines also get base color if not inheriting */
+    /* Height, width, margin-bottom are set inline in HTML */
+}
+
+.skeleton-title {
+    /* Specific adjustments if needed, e.g., if it's typically taller */
+}
+
+.skeleton-price {
+    /* Specific adjustments */
+}
+
+.skeleton-stock {
+    /* Specific adjustments */
+}
+
+.skeleton-button {
+    /* Height, width are set inline in HTML */
+}
+
+.skeleton-filter-button {
+     /* Height, width, margin are set inline in HTML */
+}

@@ -33,11 +33,49 @@
                         <input type="text" id="search-input" class="form-control" placeholder="Search products by name or description...">
                     </div>
                 </div>
-                <div id="category-filters" class="mb-3">
-                    <!-- Category filter buttons will be inserted here by app.js -->
+                <div id="category-filters" class="mb-3 d-flex flex-wrap">
+                    <!-- Skeleton Filter Buttons: Repeat for effect -->
+                    <div class="skeleton skeleton-filter-button mr-2 mb-2" style="height: 38px; width: 120px;"></div>
+                    <div class="skeleton skeleton-filter-button mr-2 mb-2" style="height: 38px; width: 100px;"></div>
+                    <div class="skeleton skeleton-filter-button mr-2 mb-2" style="height: 38px; width: 150px;"></div>
+                    <!-- Actual category filters will replace these via app.js -->
                 </div>
                 <div id="product-grid" class="row">
-                    <!-- Product cards will be inserted here by app.js -->
+                    <!-- Skeleton Product Cards: Repeat 3-6 times for effect -->
+                    <div class="col-12 col-md-6 col-lg-4 mb-4 skeleton-card">
+                        <div class="card h-100">
+                            <div class="skeleton skeleton-image" style="height: 180px; margin: 10px;"></div>
+                            <div class="card-body">
+                                <div class="skeleton skeleton-text skeleton-title" style="height: 1.2rem; width: 80%; margin-bottom: 0.75rem;"></div>
+                                <div class="skeleton skeleton-text skeleton-price" style="height: 1rem; width: 40%; margin-bottom: 1rem;"></div>
+                                <div class="skeleton skeleton-text skeleton-stock" style="height: 0.9rem; width: 50%; margin-bottom: 0.5rem;"></div>
+                                <div class="skeleton skeleton-button" style="height: 38px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4 mb-4 skeleton-card">
+                        <div class="card h-100">
+                            <div class="skeleton skeleton-image" style="height: 180px; margin: 10px;"></div>
+                            <div class="card-body">
+                                <div class="skeleton skeleton-text skeleton-title" style="height: 1.2rem; width: 85%; margin-bottom: 0.75rem;"></div>
+                                <div class="skeleton skeleton-text skeleton-price" style="height: 1rem; width: 30%; margin-bottom: 1rem;"></div>
+                                <div class="skeleton skeleton-text skeleton-stock" style="height: 0.9rem; width: 55%; margin-bottom: 0.5rem;"></div>
+                                <div class="skeleton skeleton-button" style="height: 38px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4 mb-4 skeleton-card">
+                        <div class="card h-100">
+                            <div class="skeleton skeleton-image" style="height: 180px; margin: 10px;"></div>
+                            <div class="card-body">
+                                <div class="skeleton skeleton-text skeleton-title" style="height: 1.2rem; width: 70%; margin-bottom: 0.75rem;"></div>
+                                <div class="skeleton skeleton-text skeleton-price" style="height: 1rem; width: 45%; margin-bottom: 1rem;"></div>
+                                <div class="skeleton skeleton-text skeleton-stock" style="height: 0.9rem; width: 40%; margin-bottom: 0.5rem;"></div>
+                                <div class="skeleton skeleton-button" style="height: 38px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Actual product cards will replace these via app.js -->
                 </div>
             </div>
 
