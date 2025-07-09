@@ -155,7 +155,7 @@ $(document).ready(function () {
             }
 
             const productCard = `
-                <div class="col-12 col-md-6 col-lg-4 mb-4"> {/* Added col-12 for explicit stacking on XS */}
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 ${outOfStockClass}">
                         <img src="${product.image}" class="card-img-top" alt="${product.title}">
                         <div class="card-body d-flex flex-column">
