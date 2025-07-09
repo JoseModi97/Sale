@@ -167,7 +167,7 @@ $(document).ready(function () {
                                 <p class="mb-1 stock-display">
                                     ${stock > 0 ? `<i class="fas fa-check-circle text-success mr-1"></i><span class="text-success">In Stock: ${stock}</span>` : `<i class="fas fa-ban text-danger mr-1"></i><span class="text-danger">Out of Stock</span>`}
                                 </p>
-                                <div class="d-flex mt-1 align-items-center card-action-row"> {/* Added card-action-row class */}
+                                <div class="d-flex mt-1 align-items-center card-action-row"> 
                                     ${actionButtonsHtml}
                                 </div>
                             </div>
