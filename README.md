@@ -54,7 +54,7 @@ You need a web browser to run this project.
 
 ## Screenshot
 
-![image](httpshttps://github.com/user-attachments/assets/e55b8138-e1a7-4399-8c6c-2e12a441a34a)
+![image](Screenshot 2025-08-05 214926.png)
 
 ## Acknowledgements
 
