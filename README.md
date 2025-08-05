@@ -54,7 +54,8 @@ You need a web browser to run this project.
 
 ## Screenshot
 
-![image](Screenshot 2025-08-05 220026.png)
+![Screenshot](https://github.com/JoseModi97/Sale/blob/a1ad3c10751ca0e23639649c43239327eb7371f5/Screenshot%202025-08-05%20220026.png?raw=true)
+
 
 ## Acknowledgements
 
