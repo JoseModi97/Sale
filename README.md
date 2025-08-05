@@ -54,7 +54,7 @@ You need a web browser to run this project.
 
 ## Screenshot
 
-![image](Screenshot 2025-08-05 214926.png)
+![image](Screenshot 2025-08-05 220026.png)
 
 ## Acknowledgements
 
